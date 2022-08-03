@@ -27,4 +27,23 @@ interface JsonAPI {
     @POST("posts")
     suspend fun postDataToServer(@Body jsonapiResponse: JSONAPIResponse) : Response<JSONAPIResponse>
 
+
+    @PUT("posts/{id}")
+    suspend fun putPostRequest(@Path("id") id: Int,@Body jsonapiResponse: JSONAPIResponse) : Response<JSONAPIResponse>
+
+    @PATCH("posts/{id}")
+    suspend fun patchPostRequest(@Path("id") id: Int,@Body jsonapiResponse: JSONAPIResponse) : Response<JSONAPIResponse>
+
+    @DELETE("posts/{id}")
+    suspend fun deletePost(@Path("id") id: Int) : Response<Unit> // Unit -> is just like void enum is kotlin
+
+    @FormUrlEncoded
+    @PUT("posts/{id}")
+    suspend fun  putWithField(@Field("body") body: String, @Path("id") int: Int) : Response<JSONAPIResponse>
+
+    @FormUrlEncoded
+    @PATCH("posts/{id}")
+    suspend fun  patchWithField(@Path("id") int: Int, @Field("body") body: String) : Response<JSONAPIResponse>
+
+
 }
