@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    //val data = MutableLiveData<List<JSONAPIResponse>>()
-    val data = MutableLiveData<List<commentsAPIResponse>>()
+    val data = MutableLiveData<List<JSONAPIResponse>>()
+    //val data = MutableLiveData<List<commentsAPIResponse>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,23 +41,36 @@ class MainActivity : AppCompatActivity() {
          recyclerView.layoutManager = linearLayoutManager*/
 
 
-        getData(jsonApi)
+        //getData(jsonApi)  // For Get Data Request
+
+        postData(jsonApi) // For Post Data Request
 
         data.observe(this) {
-            //val adapter = RecyclerAdapter(it)
-            val adapter = CommentsRecyclerAdapter(it)
+            val adapter = RecyclerAdapter(it)
+            //val adapter = CommentsRecyclerAdapter(it)
             recyclerView.adapter = adapter
         }
 
 
     }
 
-    fun getData(jsonApi: JsonAPI) {
+    /*fun getData(jsonApi: JsonAPI) {
         CoroutineScope(Dispatchers.IO).launch {
-            //val response = jsonApi.getPostsIDComments(4)
-            val response = jsonApi.getCommentsPostID(4)
+            val response = jsonApi.getPostsIDComments(4)
+            //val response = jsonApi.getCommentsPostID(4)
             if (response.isSuccessful) {
                 data.postValue(response.body())
+            }
+        }
+    }*/
+
+    fun postData(jsonApi: JsonAPI) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val response = jsonApi.postDataToServer(JSONAPIResponse("This is Json Body",110,"This is Json Title",4))
+            if (response.isSuccessful) {
+                response.body()?.let {
+                    data.postValue(listOf(it))
+                }
             }
         }
     }
