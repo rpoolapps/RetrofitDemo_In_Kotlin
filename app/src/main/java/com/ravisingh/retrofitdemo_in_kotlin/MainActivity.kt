@@ -1,14 +1,12 @@
 package com.ravisingh.retrofitdemo_in_kotlin
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.lifecycle.MutableLiveData
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.GsonBuilder
 import com.ravisingh.retrofitdemo_in_kotlin.jsonObject.JSONAPIResponse
+import com.ravisingh.retrofitdemo_in_kotlin.jsonObject.commentsAPIResponse
+import com.ravisingh.retrofitdemo_in_kotlin.recycler.CommentsRecyclerAdapter
 import com.ravisingh.retrofitdemo_in_kotlin.recycler.RecyclerAdapter
 import com.ravisingh.retrofitdemo_in_kotlin.retrofit.JsonAPI
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +25,8 @@ class MainActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-    val data = MutableLiveData<List<JSONAPIResponse>>()
+    //val data = MutableLiveData<List<JSONAPIResponse>>()
+    val data = MutableLiveData<List<commentsAPIResponse>>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,15 +36,16 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
 
-       /* val linearLayoutManager:LinearLayoutManager = LinearLayoutManager(this)
-        linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
-        recyclerView.layoutManager = linearLayoutManager*/
+        /* val linearLayoutManager:LinearLayoutManager = LinearLayoutManager(this)
+         linearLayoutManager.orientation = LinearLayoutManager.VERTICAL
+         recyclerView.layoutManager = linearLayoutManager*/
 
 
         getData(jsonApi)
 
         data.observe(this) {
-            val adapter = RecyclerAdapter(it)
+            //val adapter = RecyclerAdapter(it)
+            val adapter = CommentsRecyclerAdapter(it)
             recyclerView.adapter = adapter
         }
 
@@ -54,9 +54,10 @@ class MainActivity : AppCompatActivity() {
 
     fun getData(jsonApi: JsonAPI) {
         CoroutineScope(Dispatchers.IO).launch {
-            val responce = jsonApi.getPosts()
-            if (responce.isSuccessful) {
-                data.postValue(responce.body())
+            //val response = jsonApi.getPostsIDComments(4)
+            val response = jsonApi.getCommentsPostID(4)
+            if (response.isSuccessful) {
+                data.postValue(response.body())
             }
         }
     }
